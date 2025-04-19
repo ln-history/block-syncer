@@ -1,0 +1,46 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Set a lowercase username for Docker image tagging
+      - name: Set Lowercase Username
+        id: lowercase_username
+        run: echo "::set-output name=username::${GITHUB_ACTOR,,}"
+
+      # Build Docker Image
+      - name: Build Docker Image
+        run: docker build -f Dockerfile -t ghcr.io/${{ steps.lowercase_username.outputs.username }}/block-syncer:latest .
+
+       # Authenticate GHCR
+      - name: Authenticate to GHCR
+        run: echo "${{ secrets.TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+      # Push Docker Image
+      - name: Push Docker Image
+        run: docker push ghcr.io/${{ steps.lowercase_username.outputs.username }}/block-syncer:latest
+
+      # Deploy to VPS
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/docker/block-syncer
+            docker-compose pull
+            docker-compose down
+            docker-compose up -d
