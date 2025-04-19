@@ -1,0 +1,23 @@
+services:
+  tor:
+    image: dperson/torproxy
+    container_name: tor
+    ports:
+      - 8118:8118
+      - 9050:9050
+    restart: unless-stopped
+
+  block-syncer:
+    build: .
+    depends_on:
+      - tor
+    container_name: block-syncer
+    environment:
+      - HTTP_PROXY=socks5h://tor:9050
+      - HTTPS_PROXY=socks5h://tor:9050
+    volumes:
+      - blockdata:/app/data
+    restart: unless-stopped
+
+volumes:
+  blockdata:
