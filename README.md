@@ -1,4 +1,4 @@
-# 🧱 Block Producer (via Tor)
+# 🧱 Block Syncer
 
 This Python-based Kafka producer queries a [Bitcoin JSON-RPC explorer](https://github.com/janoside/btc-rpc-explorer) accessible via a `.onion` address using Tor. It retrieves blocks that are 6 confirmations deep and publishes them to a Kafka topic, avoiding duplicates even across restarts.
 
