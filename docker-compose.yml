@@ -9,14 +9,15 @@ services:
 
   block-syncer:
     build: .
+    container_name: block-syncer
     depends_on:
       - tor
-    container_name: block-syncer
     environment:
       - HTTP_PROXY=socks5h://tor:9050
       - HTTPS_PROXY=socks5h://tor:9050
     volumes:
       - blockdata:/app/data
+      - ./logs:/app/logs      
     restart: unless-stopped
 
 volumes:

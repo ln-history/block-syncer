@@ -13,8 +13,27 @@ from dotenv import load_dotenv
 
 load_dotenv(".env")
 
-logging.basicConfig(level=logging.INFO)
+from logging.handlers import RotatingFileHandler
+
+# Set up log directory and file
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+log_path = os.path.join(log_dir, "block_syncer.log")
+
+# Create rotating file handler
+file_handler = RotatingFileHandler(log_path, maxBytes=5_000_000, backupCount=5)
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
+# Create stream handler for stdout
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+stream_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
+# Apply handlers to root logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+logger.handlers = [file_handler, stream_handler]
 
 RUNNING = True
 RPC_URL = os.getenv("EXPLORER_RPC_URL", "").rstrip("/")
