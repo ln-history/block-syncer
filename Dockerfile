@@ -22,4 +22,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 VOLUME ["/app/data"]
 
-CMD ["python", "main.py", "--interval", "60"]
+COPY wait-for-tor.sh wait-for-tor.sh
+RUN chmod +x /app/wait-for-tor.sh

@@ -5,6 +5,11 @@ services:
     ports:
       - 8118:8118
       - 9050:9050
+    healthcheck:
+      test: ["CMD", "curl", "--socks5-hostname", "localhost:9050", "https://check.torproject.org"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
     restart: unless-stopped
 
   block-syncer:
@@ -12,6 +17,7 @@ services:
     container_name: block-syncer
     depends_on:
       - tor
+    entrypoint: ["./wait-for-tor.sh", "python3", "main.py", "--interval", "${REQUEST_INTERVAL_SECONDS}"]
     environment:
       - HTTP_PROXY=socks5h://tor:9050
       - HTTPS_PROXY=socks5h://tor:9050
