@@ -20,6 +20,7 @@ jobs:
           port: 22
           script: |
             cd ~/docker/block-syncer
-            git pull origin main
+            git checkout ${{ github.ref_name }}
+            git pull origin ${{ github.ref_name }}
             docker-compose down
             docker-compose up -d --build
