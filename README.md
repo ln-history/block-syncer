@@ -4,8 +4,8 @@ This Python-based Kafka producer queries a [Bitcoin JSON-RPC explorer](https://g
 
 ## 🛠 Requirements
 
-- Docker & Docker Compose
-- Kafka cluster (SSL/SASL enabled)
+- [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/) 
+- [Kafka](https://kafka.apache.org/) cluster (SSL/SASL enabled)
 
 ## 🚀 Run 
 
@@ -13,7 +13,7 @@ This Python-based Kafka producer queries a [Bitcoin JSON-RPC explorer](https://g
 ```bash
 cp .example.env .env
 ```
-Edit the values accordingly.
+Edit the secrets accordingly.
 
 - Setup Kafka certs, for more information see [here](https://github.com/bitnami/containers/blob/main/bitnami/kafka/README.md#security).
 ```bash
@@ -23,5 +23,5 @@ touch certs/kafka.truststore.pem
 
 - Run it
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
